@@ -1,0 +1,254 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="theme-color" content="#0078E7"><meta name="author" content="Shinya"><meta name="copyright" content="Shinya"><meta name="generator" content="Hexo 6.3.0"><meta name="theme" content="hexo-theme-yun"><title>二叉树的遍历 | 夤夜的世界旅行手记</title><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@900&amp;display=swap" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/star-markdown-css@0.1.24/dist/yun/yun-markdown.min.css"><script src="//at.alicdn.com/t/font_1140697_j5gk85dg4pf.js" async></script><script src="https://cdn.jsdelivr.net/npm/scrollreveal/dist/scrollreveal.min.js" defer></script><script>document.addEventListener("DOMContentLoaded", () => {
+  [".post-card",".post-content img"].forEach((target)=> {
+    ScrollReveal().reveal(target);
+  })
+});
+</script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css"><script defer src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/contrib/copy-tex.min.css"><script defer src="https://cdn.jsdelivr.net/npm/katex@latest/dist/contrib/copy-tex.min.js"></script><script defer src="https://cdn.jsdelivr.net/npm/katex@latest/dist/contrib/auto-render.min.js"></script><script>document.addEventListener("DOMContentLoaded", () => {
+  Yun.utils.renderKatex();
+});</script><link id="light-prism-css" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@latest/themes/prism.css" media="(prefers-color-scheme: light)"><link id="dark-prism-css" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@latest/themes/prism-tomorrow.css" media="(prefers-color-scheme: dark)"><link rel="icon" href="https://s2.loli.net/2022/07/21/E7qdHNpMJh13xli.png"><link rel="mask-icon" href="https://s2.loli.net/2022/07/21/E7qdHNpMJh13xli.png" color="#0078E7"><link rel="alternate icon" href="/yun.ico"><link rel="preload" href="/css/hexo-theme-yun.css" as="style"><link rel="preload" href="/js/utils.js" as="script"><link rel="preload" href="/js/hexo-theme-yun.js" as="script"><link rel="prefetch" href="/js/sidebar.js" as="script"><link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin><script id="yun-config">
+    const Yun = window.Yun || {};
+    window.CONFIG = {"hostname":"shinya754.github.io","root":"/","title":"夤夜的世界旅行手记","version":"1.6.1","mode":"time","copycode":true,"page":{"isPost":true},"i18n":{"placeholder":"搜索...","empty":"找不到您查询的内容: ${query}","hits":"找到 ${hits} 条结果","hits_time":"找到 ${hits} 条结果（用时 ${time} 毫秒）"},"anonymous_image":"https://cdn.jsdelivr.net/gh/YunYouJun/cdn/img/avatar/none.jpg","say":{"api":"https://v1.hitokoto.cn","hitokoto":true},"fireworks":{"colors":["153, 153, 255","255, 255, 0","51, 255, 0"]}};
+  </script><link rel="stylesheet" href="/css/hexo-theme-yun.css"><script src="/js/utils.js"></script><script src="/js/hexo-theme-yun.js"></script><meta name="description" content="2021.4.19 二叉树的遍历&amp;emsp;为什么要写这篇博客呢？因为我不会写迭代（&amp;emsp;递归的写法有手就行，这里记录遍历二叉树的两种方法：迭代法和Morris法">
+<meta property="og:type" content="article">
+<meta property="og:title" content="二叉树的遍历">
+<meta property="og:url" content="https://shinya754.github.io/2021/04/19/%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E9%81%8D%E5%8E%86/index.html">
+<meta property="og:site_name" content="夤夜的世界旅行手记">
+<meta property="og:description" content="2021.4.19 二叉树的遍历&amp;emsp;为什么要写这篇博客呢？因为我不会写迭代（&amp;emsp;递归的写法有手就行，这里记录遍历二叉树的两种方法：迭代法和Morris法">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://upimage.alexhchu.com/2021/05/03/2e83130ceac89.png">
+<meta property="article:published_time" content="2021-04-19T14:06:57.000Z">
+<meta property="article:modified_time" content="2021-06-01T04:06:51.400Z">
+<meta property="article:author" content="Shinya">
+<meta property="article:tag" content="学习">
+<meta property="article:tag" content="数据结构">
+<meta property="article:tag" content="二叉树">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://upimage.alexhchu.com/2021/05/03/2e83130ceac89.png"><script src="/js/ui/mode.js"></script></head><body><script defer src="https://cdn.jsdelivr.net/npm/animejs@latest"></script><script defer src="/js/ui/fireworks.js"></script><canvas class="fireworks"></canvas><div class="container"><a class="sidebar-toggle hty-icon-button" id="menu-btn"><div class="hamburger hamburger--spin" type="button"><span class="hamburger-box"><span class="hamburger-inner"></span></span></div></a><div class="sidebar-toggle sidebar-overlay"></div><aside class="sidebar"><script src="/js/sidebar.js"></script><ul class="sidebar-nav"><li class="sidebar-nav-item sidebar-nav-toc hty-icon-button sidebar-nav-active" data-target="post-toc-wrap" title="文章目录"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-list-ordered"></use></svg></li><li class="sidebar-nav-item sidebar-nav-overview hty-icon-button" data-target="site-overview-wrap" title="站点概览"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-passport-line"></use></svg></li></ul><div class="sidebar-panel" id="site-overview-wrap"><div class="site-info fix-top"><a class="site-author-avatar" href="/about/" title="Shinya"><img width="96" loading="lazy" src="https://s2.loli.net/2022/07/21/E7qdHNpMJh13xli.png" alt="Shinya"><span class="site-author-status" title="You'll see this world is wonderful.">😊</span></a><div class="site-author-name"><a href="/about/">Shinya</a></div><span class="site-name">夤夜的世界旅行手记</span><sub class="site-subtitle">你好，陌生人。</sub><div class="site-desciption">某211软工专业在读</div></div><nav class="site-state"><a class="site-state-item hty-icon-button icon-home" href="/" title="首页"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-home-4-line"></use></svg></span></a><div class="site-state-item"><a href="/archives/" title="归档"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-archive-line"></use></svg></span><span class="site-state-item-count">30</span></a></div><div class="site-state-item"><a href="/categories/" title="分类"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-folder-2-line"></use></svg></span><span class="site-state-item-count">11</span></a></div><div class="site-state-item"><a href="/tags/" title="标签"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-price-tag-3-line"></use></svg></span><span class="site-state-item-count">27</span></a></div><a class="site-state-item hty-icon-button" target="_blank" rel="noopener" href="http://121.4.147.128:8888/profile?id=%E5%A4%8F%E8%89%B2%E5%8D%83%E7%BB%AB" title="TOS战绩"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-open-arm-line"></use></svg></span></a></nav><hr style="margin-bottom:0.5rem"><div class="links-of-author"><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://github.com/Shinya754" title="GitHub" target="_blank" style="color:#6e5494"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-github-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://music.163.com/#/user/home?id=114080703" title="网易云音乐" target="_blank" style="color:#C20C0C"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-netease-cloud-music-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://www.zhihu.com/people/yin-ye-14-16" title="知乎" target="_blank" style="color:#0084FF"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-zhihu-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://space.bilibili.com/4950796" title="哔哩哔哩" target="_blank" style="color:#FF8EB3"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-bilibili-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://twitter.com/Shinya433" title="Twitter" target="_blank" style="color:#1da1f2"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-twitter-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="mailto:shinya754@qq.com" title="E-Mail" target="_blank" style="color:#8E71C1"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-mail-line"></use></svg></a></div><hr style="margin:0.5rem 1rem"><div class="links"><a class="links-item hty-icon-button" href="/links/" title="我的小伙伴们" style="color:dodgerblue"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-genderless-line"></use></svg></a></div><br><a class="links-item hty-icon-button" id="toggle-mode-btn" href="javascript:;" title="Mode" style="color: #f1cb64"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-contrast-2-line"></use></svg></a></div><div class="sidebar-panel sidebar-panel-active" id="post-toc-wrap"><div class="post-toc"><div class="post-toc-content"><ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E9%81%8D%E5%8E%86"><span class="toc-number">1.</span> <span class="toc-text">二叉树的遍历</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E8%BF%AD%E4%BB%A3%E9%81%8D%E5%8E%86"><span class="toc-number">1.1.</span> <span class="toc-text">二叉树的迭代遍历</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Morris%E6%B3%95"><span class="toc-number">1.2.</span> <span class="toc-text">Morris法</span></a></li></ol></li></ol></div></div></div></aside><main class="sidebar-translate" id="content"><div id="post"><article class="hty-card post-block" itemscope itemtype="https://schema.org/Article"><link itemprop="mainEntityOfPage" href="https://shinya754.github.io/2021/04/19/%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E9%81%8D%E5%8E%86/"><span hidden itemprop="author" itemscope itemtype="https://schema.org/Person"><meta itemprop="name" content="Shinya"><meta itemprop="description"></span><span hidden itemprop="publisher" itemscope itemtype="https://schema.org/Organization"><meta itemprop="name" content="夤夜的世界旅行手记"></span><header class="post-header"><h1 class="post-title" itemprop="name headline">二叉树的遍历</h1><div class="post-meta"><div class="post-time" style="display:inline-block"><span class="post-meta-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-calendar-line"></use></svg></span> <time title="创建时间：2021-04-19 22:06:57" itemprop="dateCreated datePublished" datetime="2021-04-19T22:06:57+08:00">2021-04-19</time><span class="post-meta-divider">-</span><span class="post-meta-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-calendar-2-line"></use></svg></span> <time title="修改时间：2021-06-01 12:06:51" itemprop="dateModified" datetime="2021-06-01T12:06:51+08:00">2021-06-01</time></div><span class="post-meta-divider">-</span><a href="#comment"><span class="post-meta-item-icon" title="评论数"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-chat-3-line"></use></svg> <span class="waline-comment-count" id="/2021/04/19/%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E9%81%8D%E5%8E%86/"></span></span></a><div class="post-classify"><span class="post-category"> <span class="post-meta-item-icon" style="margin-right:3px;"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-folder-line"></use></svg></span><span itemprop="about" itemscope itemtype="https://schema.org/Thing"><a class="category-item" href="/categories/%E7%AE%97%E6%B3%95/" style="--text-color:var(--hty-text-color)" itemprop="url" rel="index"><span itemprop="text">算法</span></a></span></span><span class="post-tag"><span class="post-meta-divider">-</span><a class="tag-item" href="/tags/%E5%AD%A6%E4%B9%A0/" style="--text-color:var(--hty-text-color)"><span class="post-meta-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-price-tag-3-line"></use></svg></span><span class="tag-name">学习</span></a><a class="tag-item" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="--text-color:var(--hty-text-color)"><span class="post-meta-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-price-tag-3-line"></use></svg></span><span class="tag-name">数据结构</span></a><a class="tag-item" href="/tags/%E4%BA%8C%E5%8F%89%E6%A0%91/" style="--text-color:var(--hty-text-color)"><span class="post-meta-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-price-tag-3-line"></use></svg></span><span class="tag-name">二叉树</span></a></span></div></div></header><section class="post-body" itemprop="articleBody"><div class="post-content markdown-body" style="--smc-primary:#0078E7;"><p>2021.4.19</p>
+<h4 id="二叉树的遍历"><a href="#二叉树的遍历" class="headerlink" title="二叉树的遍历"></a>二叉树的遍历</h4><p>&amp;emsp;为什么要写这篇博客呢？因为我不会写迭代（<br>&amp;emsp;递归的写法有手就行，这里记录遍历二叉树的两种方法：<code>迭代法</code>和<code>Morris法</code></p>
+<span id="more"></span>
+<h5 id="二叉树的迭代遍历"><a href="#二叉树的迭代遍历" class="headerlink" title="二叉树的迭代遍历"></a>二叉树的迭代遍历</h5><p>&amp;emsp;递归本质上也是使用了堆栈（方法调用存储在栈区），而迭代则是显式地维护了一个栈。</p>
+<p>&amp;emsp;<strong>先序遍历</strong>伪代码：根→左→右</p>
+<pre class="language-none"><code class="language-none">栈S;
+p &#x3D; root;
+while(p不为null || S不空)&#123;
+    while(p不为null)&#123;
+        访问p节点；
+        p的右子树入S;
+        p &#x3D; p的左子树;
+    &#125;
+    p &#x3D; S栈顶弹出;
+&#125;</code></pre>
+<p>毕竟访问完根节点就是左子树，所以根节点和左子节点就不入栈了，而栈中存储的<code>右子节点</code>则表示了每次左子树访问完成后要跳转到的节点。</p>
+<p>&amp;emsp;<strong>中序遍历</strong>伪代码：左→根→右</p>
+<pre class="language-none"><code class="language-none">栈S;
+p &#x3D; root;
+while(p || S不空)&#123;
+    while(p)&#123;
+        p入S;
+        p &#x3D; p的左子树;
+    &#125;
+    p &#x3D; S.top 出栈;
+    访问p;
+    p &#x3D; p的右子树;
+&#125;</code></pre>
+<p>每次p为null时，就找到栈顶所指的节点，因为这时栈顶节点的左子树已经访问完成了，下一个将要访问的节点就是栈顶。<br>我写的：</p>
+<pre class="language-java" data-language="java"><code class="language-java"><span class="token keyword">class</span> <span class="token class-name">Solution</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">public</span> <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Integer</span><span class="token punctuation">></span></span> <span class="token function">inorderTraversal</span><span class="token punctuation">(</span><span class="token class-name">TreeNode</span> root<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Integer</span><span class="token punctuation">></span></span> list <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ArrayList</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Integer</span><span class="token punctuation">></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">Deque</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">TreeNode</span><span class="token punctuation">></span></span> stack <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">LinkedList</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">TreeNode</span><span class="token punctuation">></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">while</span> <span class="token punctuation">(</span>root <span class="token operator">!=</span> <span class="token keyword">null</span> <span class="token operator">||</span> <span class="token operator">!</span>stack<span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+            <span class="token keyword">while</span> <span class="token punctuation">(</span>root <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+                stack<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>root<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                root <span class="token operator">=</span> root<span class="token punctuation">.</span>left<span class="token punctuation">;</span>
+            <span class="token punctuation">&#125;</span>
+            root <span class="token operator">=</span> stack<span class="token punctuation">.</span><span class="token function">pop</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            list<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>root<span class="token punctuation">.</span>val<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            root <span class="token operator">=</span> root<span class="token punctuation">.</span>right<span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+        <span class="token keyword">return</span> list<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span></code></pre>
+<p>好吧，其实和官方题解没区别。</p>
+<p>&amp;emsp;<strong>后序遍历</strong>伪代码：左→右→根<br>&amp;emsp;方法1：先序遍历的逆序</p>
+<pre class="language-none"><code class="language-none">栈S;
+p&#x3D; root;
+while(p || S不空)&#123;
+    while(p)&#123;
+        访问p节点；
+        p的左子树入S;
+        p &#x3D; p的右子树;
+    &#125;
+    p &#x3D; S栈顶弹出;
+&#125;
+结果序列逆序;</code></pre>
+<p>万一面试的时候碰到了这题还不让用这种方法，那就方法二<br>&amp;emsp;方法二：使用访问标记<br>&amp;emsp;由于对每个节点，是先访问它的左子树，再访问它的右子树，再访问它本身，但是存在一个问题：一个节点的左右子树访问完后都会返回到这个节点（栈顶为这个节点），需要在第二次返回这个节点时再访问它，可以设置一个bool型的标记，默认为<code>false</code>，第一次访问后将其置为<code>true</code>，第二次访问时发现它是<code>true</code>，然后才访问它。</p>
+<p>伪代码：</p>
+<pre class="language-none"><code class="language-none">栈S;
+p&#x3D; root;
+T&lt;节点,bool&gt; : 节点标记;
+while(p || S不空)&#123;
+    while(p)&#123;
+        p入S;
+        p &#x3D; p的左子树;
+    &#125;
+    while(S不空 且 T[S.top] &#x3D; True)&#123;
+        访问S.top;
+        S.top出S;
+    &#125;
+    if(S不空)&#123;
+        p &#x3D; S.top 的右子树;
+        T[S.top] &#x3D; True;
+    &#125;
+&#125;</code></pre>
+
+<p>没找到java里怎么用栈存键值对，那就来个官方的阳间版本：</p>
+<pre class="language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Integer</span><span class="token punctuation">></span></span> <span class="token class-name">PostOrder</span><span class="token punctuation">(</span><span class="token class-name">TreeNode</span> root<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Integer</span><span class="token punctuation">></span></span> list <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ArrayList</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token class-name">Deque</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">TreeNode</span><span class="token punctuation">></span></span> sta <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">LinkedList</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token class-name">TreeNode</span> pre <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span><span class="token comment">//pre用于指示上一次访问的节点，和上面的访问标记异曲同工</span>
+    <span class="token keyword">while</span> <span class="token punctuation">(</span>root <span class="token operator">!=</span> <span class="token keyword">null</span> <span class="token operator">||</span> <span class="token operator">!</span>sta<span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token comment">//惯例把左节点存一串进去</span>
+        <span class="token keyword">while</span> <span class="token punctuation">(</span>root <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+            sta<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>root<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            root <span class="token operator">=</span> root<span class="token punctuation">.</span>left<span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+        <span class="token comment">//先把栈顶拿出来</span>
+        root <span class="token operator">=</span> sta<span class="token punctuation">.</span><span class="token function">pop</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">//不存在右子树，或右子树已经访问过了</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>root<span class="token punctuation">.</span>right <span class="token operator">==</span> <span class="token keyword">null</span> <span class="token operator">||</span> root<span class="token punctuation">.</span>right <span class="token operator">==</span> pre<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+            list<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>root<span class="token punctuation">.</span>val<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            pre <span class="token operator">=</span> root<span class="token punctuation">;</span>
+            root <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+        <span class="token comment">//右子树存在且没有访问过</span>
+        <span class="token keyword">else</span> <span class="token punctuation">&#123;</span>
+            sta<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>root<span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//栈顶放回去，下次再访问</span>
+            root <span class="token operator">=</span> root<span class="token punctuation">.</span>right<span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span>
+    <span class="token keyword">return</span> list<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span></code></pre>
+
+<p>&amp;emsp;<strong>总结</strong>：三种遍历都是维护了一个栈，栈中存储的节点是<code>没有访问到的节点</code>，且栈顶元素总为<code>接下来要访问到的节点</code>：先序遍历一上来就把根和左访问完了，所以栈中存储的是<code>接下来要访问的右子节点</code>；中序遍历先访问最左边的节点，所以栈中存储<code>作为根节点的节点</code>，栈顶的节点被访问并出栈后，指针转移到接下来要访问的<code>右子树</code>，这个<code>右子树</code>访问完后就是下一个栈顶元素；而后序遍历先左再右，栈中存储左右子树访问结束后的<code>根节点</code>。</p>
+<h5 id="Morris法"><a href="#Morris法" class="headerlink" title="Morris法"></a>Morris法</h5><p>&amp;emsp;不论是使用递归还是迭代，空间复杂度都是<code>O(n)</code>，因为都用到了栈，而这个栈最多会存储<code>n</code>个节点（当树是一条链的时候）。为了降低空间复杂度，可以使用<code>Morris</code>法对树进行遍历。</p>
+<blockquote>
+<p>有一种巧妙的方法可以在线性时间内，只占用常数空间来实现前序遍历。这种方法由 J. H. Morris 在 1979 年的论文「Traversing Binary Trees Simply and Cheaply」中首次提出，因此被称为 Morris 遍历。</p>
+</blockquote>
+<p>&amp;emsp;Morris法的整体思路是，对于<code>某个节点</code>左子树的最右叶子结点（即<code>某个节点</code>在中序遍历下的前驱节点），将其right设置为这个<code>某个节点</code>，从而利用了树中的空闲指针。<br><img src="https://upimage.alexhchu.com/2021/05/03/2e83130ceac89.png" alt="借用一下官方题解的图" loading="lazy"><br>&amp;emsp;通过这种方式，在第一次访问节点时建立连接，第二次访问节点时就可以通过这些连接获得访问节点的次序，从而不再需要维护一个栈，将空间复杂度降低到了<code>O(1)</code>。<br>&amp;emsp;建立连接的过程如下：</p>
+<pre class="language-java" data-language="java"><code class="language-java"><span class="token class-name">TreeNode</span> p1<span class="token operator">=</span>root<span class="token punctuation">,</span>p2<span class="token operator">=</span><span class="token keyword">null</span><span class="token punctuation">;</span><span class="token comment">//p1记录当前在处理的子树的根节点，p2记录这个根节点的左子节点</span>
+<span class="token keyword">while</span> <span class="token punctuation">(</span>p1<span class="token operator">!=</span><span class="token keyword">null</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+    p2<span class="token operator">=</span>p1<span class="token punctuation">.</span>left<span class="token punctuation">;</span>
+    <span class="token keyword">if</span><span class="token punctuation">(</span>p2<span class="token operator">!=</span><span class="token keyword">null</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+        <span class="token comment">//每次找到当前节点的左子树的最右叶子结点</span>
+        <span class="token keyword">while</span> <span class="token punctuation">(</span>p2<span class="token punctuation">.</span>right<span class="token operator">!=</span><span class="token keyword">null</span> <span class="token operator">&amp;&amp;</span> p2<span class="token punctuation">.</span>right<span class="token operator">!=</span>p1<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+            p2<span class="token operator">=</span>p2<span class="token punctuation">.</span>right<span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+        <span class="token comment">//如果是第一次访问到这个前驱节点，则建立连接</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>p2<span class="token punctuation">.</span>right<span class="token operator">==</span><span class="token keyword">null</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+            p2<span class="token punctuation">.</span>right<span class="token operator">=</span>p1<span class="token punctuation">;</span>
+            <span class="token comment">//先序遍历访问节点</span>
+            p1<span class="token operator">=</span>p1<span class="token punctuation">.</span>left<span class="token punctuation">;</span>
+            <span class="token comment">//continue</span>
+        <span class="token punctuation">&#125;</span>
+        <span class="token comment">//如果是第二次访问到这个节点，则断开连接，保持树的结构</span>
+        <span class="token keyword">else</span> <span class="token keyword">if</span><span class="token punctuation">(</span>p2<span class="token punctuation">.</span>right<span class="token operator">==</span>p1<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+            <span class="token comment">//中序遍历访问节点</span>
+            p1<span class="token operator">=</span>p1<span class="token punctuation">.</span>right<span class="token punctuation">;</span>
+            p2<span class="token punctuation">.</span>right<span class="token operator">=</span><span class="token keyword">null</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span>
+    <span class="token comment">//某个子树没有左节点，则访问它的右节点</span>
+    <span class="token keyword">else</span> <span class="token punctuation">&#123;</span>
+        <span class="token comment">//先序遍历访问节点</span>
+        <span class="token comment">//中序遍历访问节点</span>
+        p1<span class="token operator">=</span>p1<span class="token punctuation">.</span>right<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span></code></pre>
+
+<p>&amp;emsp;实际上理解了之后还挺简单的（先序和中序限定）</p>
+<p><strong>先序遍历</strong>：</p>
+<pre class="language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Integer</span><span class="token punctuation">></span></span> <span class="token class-name">PreOrderMorris</span><span class="token punctuation">(</span><span class="token class-name">TreeNode</span> root<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Integer</span><span class="token punctuation">></span></span> list <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ArrayList</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Integer</span><span class="token punctuation">></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token class-name">TreeNode</span> p1<span class="token operator">=</span>root<span class="token punctuation">,</span>p2<span class="token operator">=</span><span class="token keyword">null</span><span class="token punctuation">;</span>
+    <span class="token keyword">while</span> <span class="token punctuation">(</span>p1<span class="token operator">!=</span><span class="token keyword">null</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+        p2<span class="token operator">=</span>p1<span class="token punctuation">.</span>left<span class="token punctuation">;</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>p2<span class="token operator">!=</span><span class="token keyword">null</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+            <span class="token keyword">while</span> <span class="token punctuation">(</span>p2<span class="token punctuation">.</span>right<span class="token operator">!=</span><span class="token keyword">null</span> <span class="token operator">&amp;&amp;</span> p2<span class="token punctuation">.</span>right<span class="token operator">!=</span>p1<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+                p2<span class="token operator">=</span>p2<span class="token punctuation">.</span>right<span class="token punctuation">;</span>
+            <span class="token punctuation">&#125;</span>
+            <span class="token keyword">if</span><span class="token punctuation">(</span>p2<span class="token punctuation">.</span>right<span class="token operator">==</span><span class="token keyword">null</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+                p2<span class="token punctuation">.</span>right<span class="token operator">=</span>p1<span class="token punctuation">;</span>
+                list<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>p1<span class="token punctuation">.</span>val<span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//先序遍历访问节点：第一次遇到节点</span>
+                p1<span class="token operator">=</span>p1<span class="token punctuation">.</span>left<span class="token punctuation">;</span>
+                <span class="token comment">//continue;</span>
+            <span class="token punctuation">&#125;</span>
+            <span class="token keyword">else</span> <span class="token keyword">if</span><span class="token punctuation">(</span>p2<span class="token punctuation">.</span>right<span class="token operator">==</span>p1<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+                p2<span class="token punctuation">.</span>right<span class="token operator">=</span><span class="token keyword">null</span><span class="token punctuation">;</span>
+                p1<span class="token operator">=</span>p1<span class="token punctuation">.</span>right<span class="token punctuation">;</span>
+            <span class="token punctuation">&#125;</span>
+        <span class="token punctuation">&#125;</span>
+        <span class="token keyword">else</span> <span class="token punctuation">&#123;</span>
+            list<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>p1<span class="token punctuation">.</span>val<span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//先序遍历访问节点：遇到了最左节点</span>
+            p1<span class="token operator">=</span>p1<span class="token punctuation">.</span>right<span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span>
+    <span class="token keyword">return</span> list<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span></code></pre>
+
+<p><strong>中序遍历</strong>：</p>
+<pre class="language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Integer</span><span class="token punctuation">></span></span> <span class="token class-name">MidOrderMorris</span><span class="token punctuation">(</span><span class="token class-name">TreeNode</span> root<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+    <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Integer</span><span class="token punctuation">></span></span> list <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ArrayList</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Integer</span><span class="token punctuation">></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token class-name">TreeNode</span> p1<span class="token operator">=</span>root<span class="token punctuation">,</span>p2<span class="token operator">=</span><span class="token keyword">null</span><span class="token punctuation">;</span>
+    <span class="token keyword">while</span> <span class="token punctuation">(</span>p1<span class="token operator">!=</span><span class="token keyword">null</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+        p2<span class="token operator">=</span>p1<span class="token punctuation">.</span>left<span class="token punctuation">;</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>p2<span class="token operator">!=</span><span class="token keyword">null</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+            <span class="token keyword">while</span> <span class="token punctuation">(</span>p2<span class="token punctuation">.</span>right<span class="token operator">!=</span><span class="token keyword">null</span> <span class="token operator">&amp;&amp;</span> p2<span class="token punctuation">.</span>right<span class="token operator">!=</span>p1<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+                p2<span class="token operator">=</span>p2<span class="token punctuation">.</span>right<span class="token punctuation">;</span>
+            <span class="token punctuation">&#125;</span>
+            <span class="token keyword">if</span><span class="token punctuation">(</span>p2<span class="token punctuation">.</span>right<span class="token operator">==</span><span class="token keyword">null</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+                p2<span class="token punctuation">.</span>right<span class="token operator">=</span>p1<span class="token punctuation">;</span>
+                p1<span class="token operator">=</span>p1<span class="token punctuation">.</span>left<span class="token punctuation">;</span>
+                <span class="token comment">//continue</span>
+            <span class="token punctuation">&#125;</span>
+            <span class="token keyword">else</span> <span class="token keyword">if</span><span class="token punctuation">(</span>p2<span class="token punctuation">.</span>right<span class="token operator">==</span>p1<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+                list<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>p1<span class="token punctuation">.</span>val<span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//中序遍历访问节点</span>
+                <span class="token comment">//断开连接时说明这个节点的左子树已经访问完了，所以对于中序遍历而言需要访问该节点</span>
+                p1<span class="token operator">=</span>p1<span class="token punctuation">.</span>right<span class="token punctuation">;</span>
+                p2<span class="token punctuation">.</span>right<span class="token operator">=</span><span class="token keyword">null</span><span class="token punctuation">;</span>
+            <span class="token punctuation">&#125;</span>
+        <span class="token punctuation">&#125;</span>
+        <span class="token keyword">else</span> <span class="token punctuation">&#123;</span>
+            list<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>p1<span class="token punctuation">.</span>val<span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//中序遍历访问节点</span>
+            p1<span class="token operator">=</span>p1<span class="token punctuation">.</span>right<span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span>
+    <span class="token keyword">return</span> list<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span></code></pre>
+
+<p><strong>后序遍历</strong>：</p>
+<pre class="language-java" data-language="java"><code class="language-java"></code></pre>
+
+
+
+<p>思路借鉴：<br>@jason<br><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/binary-tree-inorder-traversal/solution/die-dai-fa-by-jason-2/">https://leetcode-cn.com/problems/binary-tree-inorder-traversal/solution/die-dai-fa-by-jason-2/</a></p>
+<p>@一个Go语言全干工程师<br><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/binary-tree-preorder-traversal/solution/leetcodesuan-fa-xiu-lian-dong-hua-yan-shi-xbian-2/">https://leetcode-cn.com/problems/binary-tree-preorder-traversal/solution/leetcodesuan-fa-xiu-lian-dong-hua-yan-shi-xbian-2/</a></p>
+</div><div id="reward-container"><span class="hty-icon-button button-glow" id="reward-button" title="打赏" onclick="var qr = document.getElementById(&quot;qr&quot;); qr.style.display = (qr.style.display === &quot;none&quot;) ? &quot;block&quot; : &quot;none&quot;;"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-hand-coin-line"></use></svg></span><div id="reward-comment">希望我提供的帮助能够补偿你在这里花费的时间。</div><div id="qr" style="display:none;"><div style="display:inline-block"></div></div></div><ul class="post-copyright"><li class="post-copyright-author"><strong>本文作者：</strong>Shinya</li><li class="post-copyright-link"><strong>本文链接：</strong><a href="https://shinya754.github.io/2021/04/19/%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E9%81%8D%E5%8E%86/" title="二叉树的遍历">https://shinya754.github.io/2021/04/19/%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E9%81%8D%E5%8E%86/</a></li><li class="post-copyright-license"><strong>版权声明：</strong>本博客所有文章除特别声明外，均默认采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank" rel="noopener" title="CC BY-NC-SA 4.0 "><svg class="icon"><use xlink:href="#icon-creative-commons-line"></use></svg><svg class="icon"><use xlink:href="#icon-creative-commons-by-line"></use></svg><svg class="icon"><use xlink:href="#icon-creative-commons-nc-line"></use></svg><svg class="icon"><use xlink:href="#icon-creative-commons-sa-line"></use></svg></a> 许可协议。</li></ul></section></article><div class="post-nav"><div class="post-nav-item"><a class="post-nav-prev" href="/2021/05/07/%E8%8B%B1-%E6%B1%89-%E8%AF%8D-%E5%85%B8%EF%BC%88%E8%BF%AB%E7%9C%9F/" rel="prev" title="英 汉 词 典（迫真"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-arrow-left-s-line"></use></svg><span class="post-nav-text">英 汉 词 典（迫真</span></a></div><div class="post-nav-item"><a class="post-nav-next" href="/2021/04/14/%E5%89%8D%E7%BC%80%E6%A0%91Trie/" rel="next" title="前缀树Trie"><span class="post-nav-text">前缀树Trie</span><svg class="icon" aria-hidden="true"><use xlink:href="#icon-arrow-right-s-line"></use></svg></a></div></div></div><div class="hty-card" id="comment"><div class="comment-tooltip text-center"><span>这里是大图书馆的留言板，请友善地发言。</span><br></div><div id="waline"></div><script>Yun.utils.getScript("https://cdn.jsdelivr.net/npm/@waline/client/dist/Waline.min.js", () => {
+  const walineConfig = {"enable":true,"serverURL":"https://waline-test-bt6oy7oc4-shinya754.vercel.app","comment":true,"emoji":["https://fastly.jsdelivr.net/gh/walinejs/emojis@latest/bilibili/","https://fastly.jsdelivr.net/gh/walinejs/emojis@latest/weibo/","https://fastly.jsdelivr.net/gh/walinejs/emojis@latest/qq/"],"locale":{"placeholder":"填写邮箱，可以收到回复通知哦～"},"requiredMeta":["nick"],"el":"#waline","lang":"zh-CN"}
+  walineConfig.path = "/2021/04/19/%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E9%81%8D%E5%8E%86/"
+  new Waline(walineConfig)
+}, window.Waline);</script></div></main><footer class="sidebar-translate" id="footer"><div class="copyright"><span>&copy; 2021 – 2023 </span><span class="with-love" id="animate"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-cloud-line"></use></svg></span><span class="author"> Shinya</span></div><div class="powered"><span>由 <a href="https://hexo.io" target="_blank" rel="noopener">Hexo</a> 驱动 v6.3.0</span><span class="footer-separator">|</span><span>主题 - <a rel="noopener" href="https://github.com/YunYouJun/hexo-theme-yun" target="_blank"><span>Yun</span></a> v1.6.1</span></div><div class="live_time"><span>大图书馆已经观察并记录这个世界</span><span id="display_live_time"></span><span class="moe-text">(●'◡'●)</span><script>function blog_live_time() {
+  setTimeout(blog_live_time, 1000);
+  const start = new Date('2021-03-23T17:10:02');
+  const now = new Date();
+  const timeDiff = (now.getTime() - start.getTime());
+  const msPerMinute = 60 * 1000;
+  const msPerHour = 60 * msPerMinute;
+  const msPerDay = 24 * msPerHour;
+  const passDay = Math.floor(timeDiff / msPerDay);
+  const passHour = Math.floor((timeDiff % msPerDay) / 60 / 60 / 1000);
+  const passMinute = Math.floor((timeDiff % msPerHour) / 60 / 1000);
+  const passSecond = Math.floor((timeDiff % msPerMinute) / 1000);
+  display_live_time.innerHTML = " " + passDay + " 天 " + passHour + " 小时 " + passMinute + " 分 " + passSecond + " 秒";
+}
+blog_live_time();
+</script></div></footer><a class="hty-icon-button" id="back-to-top" aria-label="back-to-top" href="#"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-arrow-up-s-line"></use></svg><svg class="progress-circle-container" viewBox="0 0 100 100"><circle class="progress-circle" id="progressCircle" cx="50" cy="50" r="48" fill="none" stroke="#0078E7" stroke-width="2" stroke-linecap="round"></circle></svg></a></div></body></html>
